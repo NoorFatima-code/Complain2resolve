@@ -1,0 +1,19 @@
+To,
+$department
+
+Subject: Request for review and resolution of $issue
+
+Dear Sir/Madam,
+
+I, $name, residing at $address, am writing to request your review of the following complaint:
+
+$complaint
+
+I kindly request that the matter be investigated, corrected where applicable, and that I be provided with an acknowledgement or reference number. I can provide supporting documents through the official submission process if required.
+
+Reference (demo only): $reference
+
+Applicant: $name
+Address: $address
+Signature: ____________________
+Date: ____________________
