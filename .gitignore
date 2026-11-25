@@ -1,0 +1,10 @@
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+output/*
+!output/.gitkeep
+.env
+web/node_modules/
+web/dist/
