@@ -1,0 +1,107 @@
+{
+  "electricity": {
+    "label": "Electricity",
+    "authority": "Your local electricity distribution company (DISCO); NEPRA is the sector regulator.",
+    "scope_note": "The correct DISCO depends on your area. Check the company name on your electricity bill before contacting it.",
+    "source_urls": [
+      "https://nepra.org.pk/"
+    ],
+    "official_portals": [
+      "https://nepra.org.pk/"
+    ],
+    "helpline": null,
+    "submission_channel": "First submit the complaint to the DISCO named on your bill using the contact or complaint channel printed there. If it remains unresolved, check NEPRA's official website for current consumer complaint guidance.",
+    "required_documents": [
+      "Recent electricity bill or consumer/reference number (do not enter it into this demo)",
+      "Earlier bill(s) for comparison, if available",
+      "Meter reading or meter photograph, if relevant",
+      "Copy of your first complaint acknowledgement, when escalating"
+    ],
+    "response_window": null,
+    "escalation_steps": [
+      {
+        "after_working_days": 0,
+        "action": "Register the complaint with the DISCO shown on your bill and keep its acknowledgement/reference."
+      },
+      {
+        "after_working_days": 10,
+        "action": "If there is no useful response after 10 working days, follow up with the DISCO using its acknowledgement. This is a suggested follow-up interval, not an official service deadline."
+      },
+      {
+        "after_working_days": 20,
+        "action": "If still unresolved, consult NEPRA's official website for the current escalation route and eligibility."
+      }
+    ]
+  },
+  "gas": {
+    "label": "Gas",
+    "authority": "Your regional gas utility: SNGPL or SSGC, depending on your location.",
+    "scope_note": "The responsible utility depends on your area. Confirm the provider printed on your gas bill.",
+    "source_urls": [
+      "https://www.sngpl.com.pk/",
+      "https://www.ssgc.com.pk/",
+      "https://www.ogra.org.pk/"
+    ],
+    "official_portals": [
+      "https://www.sngpl.com.pk/",
+      "https://www.ssgc.com.pk/"
+    ],
+    "helpline": null,
+    "submission_channel": "Contact the provider named on your bill through the complaint channel printed there or its official website. For unresolved utility issues, consult OGRA's official website for current guidance.",
+    "required_documents": [
+      "Recent gas bill or consumer number (do not enter it into this demo)",
+      "Earlier bill(s) or payment proof, if relevant",
+      "Photograph or notes about the meter/issue, if relevant",
+      "Copy of your first complaint acknowledgement, when escalating"
+    ],
+    "response_window": null,
+    "escalation_steps": [
+      {
+        "after_working_days": 0,
+        "action": "Register the complaint with SNGPL or SSGC as shown on your bill and keep the acknowledgement."
+      },
+      {
+        "after_working_days": 10,
+        "action": "If there is no useful response after 10 working days, follow up with your provider. This is a suggested follow-up interval, not an official service deadline."
+      },
+      {
+        "after_working_days": 20,
+        "action": "If still unresolved, consult OGRA's official website for the current escalation route and eligibility."
+      }
+    ]
+  },
+  "nadra": {
+    "label": "NADRA",
+    "authority": "National Database and Registration Authority (NADRA).",
+    "scope_note": "The right route depends on the NADRA service and any receipt or tracking reference you received.",
+    "source_urls": [
+      "https://www.nadra.gov.pk/"
+    ],
+    "official_portals": [
+      "https://www.nadra.gov.pk/"
+    ],
+    "helpline": null,
+    "submission_channel": "Use the official NADRA website or the service centre/channel associated with your receipt. Never share your CNIC number or document images in this demo.",
+    "required_documents": [
+      "Relevant NADRA receipt or tracking reference (keep it private)",
+      "Brief description of the service and issue",
+      "Copy of any previous complaint acknowledgement",
+      "Bring identity documents only through NADRA's official process if requested"
+    ],
+    "response_window": null,
+    "escalation_steps": [
+      {
+        "after_working_days": 0,
+        "action": "Raise the issue through the official NADRA service channel linked to your receipt and keep the acknowledgement."
+      },
+      {
+        "after_working_days": 10,
+        "action": "If there is no useful response after 10 working days, follow up through the same official channel. This is a suggested follow-up interval, not an official service deadline."
+      },
+      {
+        "after_working_days": 20,
+        "action": "If still unresolved, consult NADRA's official website for the current escalation route."
+      }
+    ]
+  }
+}
