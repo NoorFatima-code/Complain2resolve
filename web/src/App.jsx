@@ -35,6 +35,28 @@ const EXAMPLES = [
   "I need a correction on my NADRA card",
 ];
 
+const COMPLAINT_LANGUAGES = ["اردو", "Roman Urdu", "English"];
+
+const EXAMPLES_BY_LANGUAGE = {
+  اردو: [
+    "میرا بجلی کا بل اچانک بہت زیادہ آ گیا ہے۔",
+    "گیس کا پریشر بہت کم ہے۔",
+    "مجھے نادرا ریکارڈ میں درستگی کروانی ہے۔",
+  ],
+  "Roman Urdu": [
+    "Mera bijli ka bill achanak bohat zyada aa gaya hai.",
+    "Gas ka pressure bohat kam hai.",
+    "Mujhe NADRA record mein correction karwani hai.",
+  ],
+  English: EXAMPLES,
+};
+
+const SERVICE_PROMPTS = {
+  electricity: EXAMPLES_BY_LANGUAGE["Roman Urdu"][0],
+  gas: EXAMPLES_BY_LANGUAGE["Roman Urdu"][1],
+  nadra: EXAMPLES_BY_LANGUAGE["Roman Urdu"][2],
+};
+
 const SERVICES = [
   {
     key: "electricity",
@@ -348,7 +370,7 @@ function FlowLayout({ active, back, children }) {
   );
 }
 
-function Intake({ complaint, setComplaint, useAi, setUseAi, aiAvailable, onAnalyze, busy, error, back }) {
+function Intake({ complaint, setComplaint, complaintLanguage, setComplaintLanguage, useAi, setUseAi, aiAvailable, onAnalyze, busy, error, back }) {
   const remaining = 1200 - complaint.length;
   return (
     <FlowLayout active={1} back={back}>
@@ -362,8 +384,21 @@ function Intake({ complaint, setComplaint, useAi, setUseAi, aiAvailable, onAnaly
             Tell us in your own words. A few sentences are enough to get
             started.
           </p>
-          <div className="language-hint">
-            <span>ا</span> Urdu <i /> Roman Urdu <i /> English
+          <div className="complaint-language">
+            <span className="field-label">I’ll write in</span>
+            <div className="language-switch" role="group" aria-label="Complaint language">
+              {COMPLAINT_LANGUAGES.map((option) => (
+                <button
+                  type="button"
+                  className={complaintLanguage === option ? "chosen" : ""}
+                  key={option}
+                  aria-pressed={complaintLanguage === option}
+                  onClick={() => setComplaintLanguage(option)}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
         <div className="complaint-box">
@@ -372,7 +407,9 @@ function Intake({ complaint, setComplaint, useAi, setUseAi, aiAvailable, onAnaly
             id="complaint"
             maxLength={1200}
             rows={5}
-            placeholder="For example: Mera bijli ka bill achanak bohat zyada aa gaya..."
+            placeholder={EXAMPLES_BY_LANGUAGE[complaintLanguage][0]}
+            dir={complaintLanguage === "اردو" ? "rtl" : "ltr"}
+            lang={complaintLanguage === "اردو" ? "ur" : complaintLanguage === "English" ? "en" : "ur-Latn"}
             value={complaint}
             onChange={(event) => setComplaint(event.target.value)}
             autoFocus
@@ -383,7 +420,7 @@ function Intake({ complaint, setComplaint, useAi, setUseAi, aiAvailable, onAnaly
           </div>
           <div className="example-row">
             <span>Need a starting point?</span>
-            {EXAMPLES.map((example) => (
+            {EXAMPLES_BY_LANGUAGE[complaintLanguage].map((example) => (
               <button key={example} onClick={() => setComplaint(example)}>
                 {example}
               </button>
@@ -431,7 +468,7 @@ function Intake({ complaint, setComplaint, useAi, setUseAi, aiAvailable, onAnaly
   );
 }
 
-function ResultScreen({ result, checklist, setChecklist, onNext, back, error }) {
+function ResultScreen({ result, checklist, setChecklist, onDownloadChecklist, onNext, back, error }) {
   const department = result.department;
   const analysis = result.analysis;
   const checkedCount = Object.values(checklist).filter(Boolean).length;
@@ -483,6 +520,9 @@ function ResultScreen({ result, checklist, setChecklist, onNext, back, error }) 
           <div className="checklist-title">
             <span className="checklist-icon"><FileText size={19} /></span>
             <span><b>What to prepare</b><small>{checkedCount} of {department.required_documents.length} checked</small></span>
+            <button className="checklist-download" onClick={onDownloadChecklist}>
+              <FileDown size={15} /> Download
+            </button>
           </div>
           <p className="checklist-intro">Keep these handy for the official process. Don’t upload them here.</p>
           <div className="document-list">
@@ -512,7 +552,7 @@ function ResultScreen({ result, checklist, setChecklist, onNext, back, error }) 
   );
 }
 
-function ApplicationScreen({ result, complaint, applicant, setApplicant, language, setLanguage, application, setApplication, onGenerate, onDownload, busy, error, back }) {
+function ApplicationScreen({ result, complaint, applicant, setApplicant, language, setLanguage, application, setApplication, previewIsCurrent, onGenerate, onDownload, busy, error, back }) {
   const department = result.department;
   return (
     <FlowLayout active={3} back={back}>
@@ -556,7 +596,11 @@ function ApplicationScreen({ result, complaint, applicant, setApplicant, languag
               </button>
             ))}
           </div>
-          <p className="preview-hint">After editing your details or language, refresh the preview to update the letter.</p>
+          <p className={`preview-hint ${application && !previewIsCurrent ? "preview-stale" : ""}`}>
+            {application && !previewIsCurrent
+              ? "Your details changed. Refresh the preview before downloading the updated letter."
+              : "After editing your details or language, refresh the preview to update the letter."}
+          </p>
           <button className="button button-primary generate-button" onClick={onGenerate} disabled={busy}>
             {busy ? "Preparing your letter..." : application ? "Refresh letter preview" : "Create my letter"}
             <ArrowRight size={17} />
@@ -578,7 +622,7 @@ function ApplicationScreen({ result, complaint, applicant, setApplicant, languag
               />
               <div className="letter-actions">
                 {error && <span className="error-inline">{error}</span>}
-                <button className="button button-dark" onClick={onDownload} disabled={busy}>
+                <button className="button button-dark" onClick={onDownload} disabled={busy || !previewIsCurrent}>
                   <FileDown size={16} /> {busy ? "Creating PDF..." : "Download PDF"}
                 </button>
               </div>
@@ -688,6 +732,7 @@ function Footer() {
 export default function App() {
   const [screen, setScreen] = useState("home");
   const [complaint, setComplaint] = useState("");
+  const [complaintLanguage, setComplaintLanguage] = useState("Roman Urdu");
   const [useAi, setUseAi] = useState(false);
   const [aiAvailable, setAiAvailable] = useState(false);
   const [result, setResult] = useState(null);
@@ -695,10 +740,19 @@ export default function App() {
   const [applicant, setApplicant] = useState({ name: "", address: "" });
   const [language, setLanguage] = useState("اردو");
   const [application, setApplication] = useState("");
+  const [applicationDetailsKey, setApplicationDetailsKey] = useState("");
   const [demo, setDemo] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const issueCategory = useMemo(() => result?.analysis?.category, [result]);
+  const currentApplicationDetailsKey = JSON.stringify({
+    complaint,
+    category: issueCategory,
+    name: applicant.name,
+    address: applicant.address,
+    language,
+  });
+  const previewIsCurrent = Boolean(application) && applicationDetailsKey === currentApplicationDetailsKey;
 
   useEffect(() => {
     request("/api/health")
@@ -708,10 +762,15 @@ export default function App() {
   }, []);
 
   const start = (category) => {
-    setComplaint(category ? `I have an issue with ${category}. ` : "");
+    setComplaint(SERVICE_PROMPTS[category] || "");
+    setComplaintLanguage("Roman Urdu");
+    setUseAi(false);
     setResult(null);
     setChecklist({});
+    setApplicant({ name: "", address: "" });
+    setLanguage("اردو");
     setApplication("");
+    setApplicationDetailsKey("");
     setDemo(null);
     setError("");
     setScreen("intake");
@@ -723,8 +782,13 @@ export default function App() {
     setScreen("home");
     setResult(null);
     setComplaint("");
+    setComplaintLanguage("Roman Urdu");
+    setUseAi(false);
     setChecklist({});
+    setApplicant({ name: "", address: "" });
+    setLanguage("اردو");
     setApplication("");
+    setApplicationDetailsKey("");
     setDemo(null);
     setError("");
     window.location.hash = "";
@@ -771,6 +835,7 @@ export default function App() {
       });
       const data = await response.json();
       setApplication(data.application);
+      setApplicationDetailsKey(currentApplicationDetailsKey);
       setScreen("application");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (requestError) {
@@ -781,6 +846,10 @@ export default function App() {
   };
 
   const downloadPdf = async () => {
+    if (!previewIsCurrent) {
+      setError("Refresh the letter preview before downloading.");
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -792,7 +861,7 @@ export default function App() {
       const href = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = href;
-      link.download = "shikayat-application.pdf";
+      link.download = "scomplain2resolve-application.pdf";
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -804,6 +873,37 @@ export default function App() {
     } finally {
       setBusy(false);
     }
+  };
+
+  const downloadChecklist = () => {
+    const department = result.department;
+    const lines = [
+      `${department.label} complaint checklist`,
+      "",
+      `Responsible route: ${department.authority}`,
+      "",
+      "Documents to prepare:",
+      ...department.required_documents.map((document) => `- ${document}`),
+      "",
+      `Submission guidance: ${department.submission_channel}`,
+      "",
+      "Suggested follow-up steps (not official deadlines):",
+      ...department.escalation_steps.map(
+        (step) => `- ${step.after_working_days === 0 ? "Start now" : `After ${step.after_working_days} working days`}: ${step.action}`,
+      ),
+      "",
+      "Guidance only, not legal advice. Verify current details with official sources.",
+      "This checklist was prepared by scomplain2resolve. Nothing was submitted.",
+    ];
+    const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = `scomplain2resolve-${department.label.toLowerCase()}-checklist.txt`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(href), 1000);
   };
 
   const createDemo = async () => {
@@ -825,8 +925,14 @@ export default function App() {
   const beginAgain = () => {
     setScreen("intake");
     setComplaint("");
+    setComplaintLanguage("Roman Urdu");
+    setUseAi(false);
     setResult(null);
+    setChecklist({});
+    setApplicant({ name: "", address: "" });
+    setLanguage("اردو");
     setApplication("");
+    setApplicationDetailsKey("");
     setDemo(null);
     setError("");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -851,6 +957,8 @@ export default function App() {
         <Intake
           complaint={complaint}
           setComplaint={setComplaint}
+          complaintLanguage={complaintLanguage}
+          setComplaintLanguage={setComplaintLanguage}
           useAi={useAi}
           setUseAi={setUseAi}
           aiAvailable={aiAvailable}
@@ -865,6 +973,7 @@ export default function App() {
           result={result}
           checklist={checklist}
           setChecklist={setChecklist}
+          onDownloadChecklist={downloadChecklist}
           onNext={makeApplication}
           back={() => setScreen("intake")}
           error={error}
@@ -880,6 +989,7 @@ export default function App() {
           setLanguage={setLanguage}
           application={application}
           setApplication={setApplication}
+          previewIsCurrent={previewIsCurrent}
           onGenerate={makeApplication}
           onDownload={downloadPdf}
           busy={busy}

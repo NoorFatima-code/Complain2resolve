@@ -228,6 +228,8 @@ a { color: inherit; }
 .checklist-title b, .checklist-title small, .panel-heading b, .panel-heading small { display: block; }
 .checklist-title b, .panel-heading b { font-size: 12px; }
 .checklist-title small, .panel-heading small { margin-top: 4px; color: #888691; font-size: 9px; }
+.checklist-download { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; padding: 8px 9px; color: var(--indigo); background: var(--white); border: 1px solid #dedcf3; border-radius: 7px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.checklist-download:hover { background: var(--lavender); }
 .checklist-intro { margin: 13px 0; color: #777680; font-size: 10px; line-height: 1.55; }
 .document-list { display: grid; gap: 8px; }
 .document-item { display: flex; align-items: flex-start; gap: 9px; padding: 10px; color: #5e5c66; background: #f8f7f3; border: 1px solid transparent; border-radius: 8px; font-size: 9px; line-height: 1.5; cursor: pointer; }
@@ -255,7 +257,13 @@ a { color: inherit; }
 .language-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 4px; background: #f0eee9; border-radius: 8px; }
 .language-switch button { min-height: 34px; color: #74717b; background: transparent; border: 0; border-radius: 6px; font-size: 10px; font-weight: 700; }
 .language-switch button.chosen { color: var(--indigo); background: var(--white); box-shadow: 0 2px 6px rgba(40,38,53,.08); }
+.complaint-language { max-width: 310px; margin-top: 22px; }
+.complaint-language .field-label { margin: 0; }
+.complaint-language .language-switch { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 8px; }
+.complaint-language .language-switch button { padding: 0 6px; }
+.complaint-language .language-switch button:first-child { font-family: "Noto Nastaliq Urdu", serif; }
 .preview-hint { margin: 8px 0 0; color: #85828d; font-size: 9px; line-height: 1.5; }
+.preview-hint.preview-stale { color: #9f3c35; }
 .generate-button { width: 100%; margin-top: 18px; }
 .letter-panel { overflow: hidden; min-height: 450px; }
 .letter-toolbar { height: 49px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; color: #6e6c77; background: #f8f7f3; border-bottom: 1px solid #ebe8e1; }
@@ -473,6 +481,7 @@ a { color: inherit; }
   .progress-step.active .progress-name { display: block; font-size: 11px; }
   .progress-number { font-size: 10px; }
   .flow-copy > p { font-size: 14px; }
+  .complaint-language { max-width: 100%; margin-top: 13px; }
   .complaint-box > label, .field-label { font-size: 14px; }
   .complaint-box textarea { font-size: 16px; }
   .textarea-meta, .example-row > span, .example-row button { font-size: 12px; }
@@ -483,6 +492,7 @@ a { color: inherit; }
   .first-action small, .first-action b { font-size: 13px; }
   .fine-print, .checklist-title small, .panel-heading small { font-size: 12px; }
   .checklist-title b, .panel-heading b { font-size: 15px; }
+  .checklist-download { font-size: 12px; }
   .checklist-intro, .document-item, .checklist-notice, .flow-bottom p { font-size: 13px; }
   .text-field, .language-switch button { font-size: 15px; }
   .privacy-note, .preview-hint, .letter-empty p { font-size: 12px; }
